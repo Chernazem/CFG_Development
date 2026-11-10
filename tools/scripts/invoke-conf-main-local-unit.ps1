@@ -1,4 +1,4 @@
-param(
+﻿param(
     [ValidateSet('Clean', 'Prepare', 'UpdateConfig', 'UpdateTests', 'LoadData', 'RunUnit', 'All', 'Status')]
     [string]$Phase = 'All',
 
@@ -652,8 +652,13 @@ function Invoke-Unit {
         }
 
         Set-RunnerDbUserForCommand
+        # Positional testsPath + --config-tests must be explicit: --settings alone does not
+        # populate them in vanessa-runner 2.6.x, which yields empty path and
+        # System.ArgumentException "Путь имеет недопустимую форму" at КлючЗапускаЗагрузчика.
         $args = @(
             'xunit',
+            $STestExtName,
+            '--config-tests',
             '--settings', 'build/vrunnerXUnit.json',
             '--ibconnection', $ConnectionString,
             '--v8version', $V8Version,
