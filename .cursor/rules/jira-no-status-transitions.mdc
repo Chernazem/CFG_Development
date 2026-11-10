@@ -1,0 +1,12 @@
+---
+description: Не менять статусы задач Jira (workflow transitions)
+alwaysApply: true
+---
+
+# Jira: статусы не трогать
+
+**Запрещено** менять статус / resolution / делать workflow transition по задачам Jira (любой проект, в т.ч. DEV-*, APNS).
+
+Разрешено: читать issues, комментарии, при необходимости править описание/ссылки на MR.
+
+Не поручать агентам на TB-PC переводить задачи в Done / In Progress / и т.п.

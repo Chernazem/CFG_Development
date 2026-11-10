@@ -1,0 +1,10 @@
+﻿oscript_modules/
+.local-ci/
+.local-ci-runlogs/
+.local-tools/
+.tools/
+**/.temp/
+**/ConfigDumpInfo.xml
+DEV-*/
+repos/DEV-*
+**/*.bin

@@ -1,0 +1,93 @@
+# Матрица ролей (workspace + репозитории)
+version: 2
+
+scope:
+  workspace_root: .
+  repositories_registry: repos/manifest.yaml
+  repository_template: repos/_template
+
+roles:
+  analyst:
+    skill: 1c-analyst
+    outputs:
+      - docs/requirements/
+      - repos/*/docs/requirements/
+    handoff_to: [architect, developer]
+
+  architect:
+    skill: 1c-architect
+    outputs:
+      - docs/architecture/
+      - docs/decisions/
+      - repos/*/docs/decisions/
+    handoff_to: [developer]
+
+  developer:
+    skill: 1c-developer
+    outputs:
+      - repos/*/src/
+    constraints:
+      - one_repository_per_changeset_unless_planned
+    reads:
+      - docs/requirements/
+      - docs/architecture/
+      - docs/decisions/
+      - repos/manifest.yaml
+      - repos/*/AGENTS.md
+
+  reviewer:
+    skill: 1c-reviewer
+    inputs:
+      - repos/*/src/
+    must_read:
+      - repos/<target>/.cursor/rules/
+    gate: true
+
+  tester:
+    skill: 1c-tester
+    outputs:
+      - repos/*/tests/
+    handoff_to: [developer]
+
+supporting_skills:
+  sources:
+    - https://gitlab.centrofinans.ru/1c/ai_rules
+    - https://github.com/FSerg/cc-1c-skills
+    - https://github.com/FSerg/1c-llm-requests
+  imported:
+    - skill: 1c-queries
+      use_for: Запросы к базе 1С через MCP execute_1c_query или fallback query-1c-llm-requests.ps1
+    - skill: 1c-external-epf-authoring
+      use_for: Внешние обработки EPF и сборка compileepf
+    - skill: 1c-test-first-development
+      use_for: Test-first доработки 1С с YaxUnit
+    - skill: requirements-writer
+      use_for: Постановка FNC/ARC в Confluence-стиле, результат — Cursor Canvas
+    - skill: confluence-wiki-search
+      use_for: Поиск в корпоративной wiki Confluence
+    - skill: 1c-bsp-check
+      use_for: Проверка значения параметра через БСП Проверить
+    - skill: 1c-bsp-check-parameter
+      use_for: Проверка типа параметра через БСП ПроверитьПараметр
+    - skill: 1c-public-api-param-types
+      use_for: Граница проверок в публичном API 1С
+    - skill: 1c-form-secret-edit
+      use_for: Секреты на управляемой форме без утечки на клиент
+    - skill: 1c-sql-translate
+      use_for: Перевод SQL ТЖ DBMSSQL в имена метаданных 1С
+    - skill: 1c-graylog-find-query
+      use_for: Поиск исходного запроса 1С по сообщению Graylog
+    - skill: web-test-tb
+      use_for: Best practices web-test TB через веб-клиент
+    - skill: cc-1c-skills families
+      use_for: cf/cfe/db/epf/erf/form/meta/mxl/role/skd/subsystem/web операции с 1С (вызов по имени)
+    - tool: 1c-llm-requests
+      use_for: HTTP-запросы к данным ИБ 1С для анализа через LLM, только с минимальными правами
+
+rules_priority:
+  - repository_cursor_rules
+  - repository_AGENTS.md
+  - workspace_cursor_rules
+  - role_skills
+
+default_language: ru

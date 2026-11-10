@@ -1,0 +1,20 @@
+﻿---
+description: Правила уровня рабочей области TB (мультирепозиторий)
+alwaysApply: true
+---
+
+# Workspace TB
+
+- Перед разработкой следуй `.cursor/rules/critical-flow.mdc`.
+- Код конфигураций — только внутри `repos/<id>/`, не в корне workspace.
+- Перед правками определи целевой репозиторий: `repos/manifest.yaml` или уточни у пользователя.
+- **TB / ТБ** = `conf-main` → `repos/conf-main/`; инструкции агента — `repos/conf-main/AGENTS.md` (приоритет над workspace).
+- **TB_ext / расширения** = `extensions` → `repos/extensions/`.
+- **tb_api / swagger** = `api-swagger` → `repos/api-swagger/`.
+- Правила репозитория (`.cursor/rules/` внутри `repos/<id>/`) **важнее** общих.
+- Кросс-репо ТЗ и ADR — `docs/` корня; локальные — `repos/<id>/docs/`.
+- Один change set — один репозиторий, если задача не помечена как кросс-репозиторная.
+- Роли и отдельские навыки — `.cursor/skills/`; каталог `cf-*`/`db-*`/`form-*` вызывать по имени. Состав: `docs/setup/ai-rules.md`, `docs/setup/cc-1c-skills.md`.
+- Внешние клоны инструментов — `.tools/`; перед HTTP к данным ИБ — `docs/setup/1c-llm-requests.md`, минимальные права.
+- Пути в скриптах и docs — относительно корня текущего workspace, не зашивать старый `D:\Dev Projects\TB`.
+- Чат агента остаётся в этом workspace. Не вызывать `move_agent_to_root` / `move_agent_to_cloned_root` для `repos/DEV-*`: worktree — каталог внутри проекта, не новый корень агента.

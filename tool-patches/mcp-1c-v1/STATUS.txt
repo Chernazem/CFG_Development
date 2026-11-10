@@ -1,0 +1,7 @@
+﻿ M docker-compose.yml
+ M embeddings/Dockerfile
+ M embeddings/embedding_service.py
+ M embeddings/requirements.txt
+ M loader/Dockerfile
+ M mcp/Dockerfile
+?? qdrant_storage/

@@ -1,0 +1,27 @@
+version: 1
+
+repositories:
+  - id: conf-main
+    aliases: [TB, ТБ, tb]
+    path: repos/conf-main
+    remote: https://gitlab.centrofinans.ru/1c/TB.git
+    kind: configuration
+    platform: "8.3.27"
+    description: Основная конфигурация 1С (GitLab TB) и автотесты
+
+  - id: extensions
+    aliases: [TB_ext, TB ext, tb_ext]
+    path: repos/extensions
+    remote: https://gitlab.centrofinans.ru/1c/TB_ext.git
+    kind: extension
+    extends: conf-main
+    platform: "8.3.27"
+    description: Расширения конфигурации TB
+
+  - id: api-swagger
+    aliases: [tb_api, TB API, tb-api, swagger]
+    path: repos/api-swagger
+    remote: https://gitlab.centrofinans.ru/1c/tb_api.git
+    kind: documentation
+    relates_to: conf-main
+    description: OpenAPI TB (tb_api), публикация developers.centrofinans.ru

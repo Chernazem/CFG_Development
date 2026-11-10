@@ -1,0 +1,10 @@
+root = true
+
+[AGENTS.md]
+charset = utf-8-bom
+
+[.cursor/rules/*.mdc]
+charset = utf-8-bom
+
+[docs/setup/*.md]
+charset = utf-8-bom

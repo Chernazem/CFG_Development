@@ -1,0 +1,22 @@
+version: 1
+
+repositories:
+  - id: conf-main
+    aliases: [TB, ТБ]
+    path: repos/conf-main
+    remote: https://gitlab.centrofinans.ru/1c/TB.git
+    kind: configuration
+
+  - id: extensions
+    aliases: [TB_ext]
+    path: repos/extensions
+    remote: https://gitlab.centrofinans.ru/1c/TB_ext.git
+    kind: extension
+    extends: conf-main
+
+  - id: api-swagger
+    aliases: [tb_api]
+    path: repos/api-swagger
+    remote: https://gitlab.centrofinans.ru/1c/tb_api.git
+    kind: documentation
+    relates_to: conf-main

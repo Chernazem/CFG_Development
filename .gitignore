@@ -1,0 +1,71 @@
+# 1C: бинарные артефакты (в git — только исходники в src/)
+*.cf
+*.cfe
+*.epf
+*.erf
+*.dt
+*.log
+*.lgp
+*.lck
+
+# Выгрузка / служебные каталоги платформы
+/out/
+/build/
+temp/
+
+# 1C:EDT
+.metadata/
+.settings/
+.project/
+.classpath
+.edt-workspace/
+
+# OneScript / Vanessa / CI
+oscript_modules/
+packagedef.lock
+
+# Vendor checkouts and local tools (restore via docs/setup)
+.tools/
+!.tools/.gitkeep
+
+# Local CI artifacts and DEV task working dirs
+.local-ci/
+.local-ci-runlogs/
+.local-tools/
+DEV-*/
+.tmp*
+.tmp-*/
+
+# Базы и выгрузки платформы в корне workspace
+/src/
+/tests/
+*.1cd
+
+# Материалы вне контура разработки TB
+conference-ai-unit-tests-1c/
+
+# Клоны GitLab остаются локально. В этот репозиторий — только реестр.
+repos/*
+!repos/manifest.yaml
+!repos/manifest.example.yaml
+!repos/README.md
+
+# IDE и ОС
+.idea/
+.vscode/
+!.vscode/extensions.json
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Секреты
+*.env
+.env.*
+.env.local
+secrets/
+**/credentials.*
+**/glpat-*
+
+# Персональные досье: ФИО, траты на ИИ, активность
+ai-effectiveness/people/
+

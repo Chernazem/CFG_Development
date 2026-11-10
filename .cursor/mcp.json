@@ -1,0 +1,19 @@
+{
+  "servers": {
+    "tb-1c-rag": {
+      "headers": {
+        "x-collection-name": "tb_1c_rag"
+      },
+      "url": "http://localhost:8000/mcp"
+    },
+    "confluence": {
+      "url": "https://mcp-confluence.m.dcrt.centrofinans.ru/mcp"
+    },
+    "graylog-rt": {
+      "url": "https://mcp-graylog-oauth.m.dcrt.centrofinans.ru/mcp"
+    },
+    "edt": {
+      "url": "http://localhost:8765/mcp"
+    }
+  }
+}

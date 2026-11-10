@@ -1,0 +1,19 @@
+---
+description: После push в MR сразу ставить мониторинг Jenkins-сборки
+alwaysApply: true
+---
+
+# Мониторинг Jenkins после push в MR
+
+После **каждого** `git push` в ветку с открытым Merge Request:
+
+1. **Сразу** поднять heartbeat мониторинга внешней Jenkins-сборки (не ждать просьбы пользователя).
+2. Интервал: каждые **30 минут**, пока сборка не стартовала или `running` / `building`.
+3. В Cursor: Automation или `/loop 30m` (локально — monitored shell с sentinel).
+4. Terminal result (`SUCCESS` / `FAILED` / `UNSTABLE` / `ABORTED`) разобрать **один раз**, сообщить в чат, при необходимости обновить MR, **остановить** мониторинг.
+5. В разборе терминальной сборки **обязательно** проверить **SonarQube Quality Gate** (stage `SonarQube Quality gate` / `waitForQualityGate`). Для готовности MR нужен **зелёный (OK)** QG. Красный QG или `UNSTABLE`/`FAILURE` из‑за QG — исправить findings и сделать новый push + новый цикл мониторинга. См. `docs/setup/sonarqube-quality-gate.md` и critical-flow п.12/15.
+6. Новая сборка после следующего push — **новый** цикл; ту же завершённую сборку повторно не анализировать.
+7. **Стоп по инфраструктуре:** если у одного и того же MR **три завершённые сборки подряд** имеют результат **`ABORTED`** (Jenkins `result=ABORTED` / GitLab pipeline canceled из‑за abort агента), **запрещено** автоматически перезапускать сборку, делать empty-commit retrigger или новый push «ради ретрая». Остановить heartbeat, зафиксировать в MR/чате evidence (номера сборок), **ждать явной команды** пользователя/PM. Причина: это симптом инфраструктуры (агент, очередь, таймаут, сеть), а не кода задачи. Подробности: `docs/setup/jenkins-aborted-builds.md`.
+8. Транспорт и VPN: `.cursor/rules/codex-automations.mdc`, `docs/setup/codex-automations-access.md`.
+
+Это обязательный шаг вместе с critical-flow п.11–15, не опциональный follow-up.

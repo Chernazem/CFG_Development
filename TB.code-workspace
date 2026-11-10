@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "name": "TB (workspace)",
+      "path": "."
+    },
+    {
+      "name": "TB — основная конфигурация",
+      "path": "repos/conf-main"
+    },
+    {
+      "name": "TB_ext — расширения",
+      "path": "repos/extensions"
+    },
+    {
+      "name": "tb_api — Swagger",
+      "path": "repos/api-swagger"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.metadata": true
+    }
+  }
+}

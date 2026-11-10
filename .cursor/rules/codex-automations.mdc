@@ -1,0 +1,16 @@
+﻿---
+description: VPN, proxy, Jenkins/Allure, GitLab TLS и ACL .git при обращениях к centrofinans.ru
+alwaysApply: false
+---
+
+# Внутренняя сеть и git ACL (Centrofinans)
+
+Подключай это правило, когда агент ходит в Jenkins, Allure, GitLab, Confluence, Graylog или другие `*.centrofinans.ru`, либо когда commit/push упирается в `.git` ACL. Подробности: `docs/setup/codex-automations-access.md`.
+
+- Доступ к внутренним ресурсам — через OpenVPN; не идти в `*.centrofinans.ru` через proxy `127.0.0.1:9`.
+- Перед запросами очищать `HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY` и lowercase-варианты; `NO_PROXY/no_proxy` = `localhost,127.0.0.1,.centrofinans.ru,centrofinans.ru,jenkins.centrofinans.ru,gitlab.centrofinans.ru`.
+- Jenkins/Allure: не полагаться на Windows Schannel/curl как основной транспорт. При `SEC_E_NO_CREDENTIALS` — Node.js `https`/`fetch` с OpenSSL; `curl` только для диагностики.
+- Allure details: `widgets/failed-tests.json` / `widgets/defects.json` с `302 -> index.html#404` — не auth-блокер. Брать `data/categories.json`, затем `data/test-cases/<uid>.json` для leaf `failed`/`broken`.
+- Jenkins heartbeat: каждые 30 минут, пока сборка не стартовала или `running`. Terminal result разобрать ровно один раз и остановить мониторинг. Новая сборка после push — новый цикл.
+- GitLab: credentials сессии через Git Credential Manager, не Jenkins. Для git к `gitlab.centrofinans.ru`: `-c http.sslbackend=openssl`; `http.sslVerify=false` только как флаг конкретной команды через VPN, не в config.
+- Перед commit/push: нет `index.lock`, `.git` пишется. Известный `DENY` ACE для SID `S-1-5-21-2994193773-3879609815-543980735-1115835159` снимать устойчиво (DACL protect + удаление deny через .NET `GetAccessControl(AccessControlSections.Access)`), не трогая allow-права. Self-heal: `tools/scripts/repair-codex-automation-git-acl.ps1` с корнем текущего workspace.
