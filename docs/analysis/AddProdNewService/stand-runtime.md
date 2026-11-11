@@ -16,7 +16,7 @@
 
 ## offerings/list
 
-`POST /api/v1/offerings/list`. Обязательные: `client_ref`, `channel`; для источника ТБ ещё `operation_kind`, `loan_kind`, `requested_amount`, `term_days`. Рекомендуется `external_ref` (заявка) — связь решения с заявкой и безопасный повтор.
+`POST /api/v1/offerings/list`. Обязательные: `client_ref`, `channel`. Для обычной выдачи ТБ ещё `operation_kind`, `loan_kind`, `requested_amount`, `term_days`. Для транша КЛ / standalone — `coverage_scope_kind` (`credit_line_tranche` | `standalone`); полный займовый контекст не обязателен, `requested_amount` рекомендуется если сумма известна. `external_ref` на list опционален (не GUID будущей заявки).
 
 **Таймаут HTTP list: 15–20 с** (в элементе `НастройкиСервисаДополнительныхПродуктов`, не 5 с). Значение по умолчанию в коде, если реквизит пуст — см. `ТаймаутПодключенияПоУмолчанию` (целим **20**).
 

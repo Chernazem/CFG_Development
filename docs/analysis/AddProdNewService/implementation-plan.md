@@ -176,7 +176,7 @@ Jira: [DEV-78572](https://jira.centrofinans.ru/browse/DEV-78572). **Статус
 Не смешивать с `issue` в первой итерации. Точки:
 
 - продление: `deal_scenario=prolongation`
-- транш КЛ: `GetReissueTrancheAvailableAdditionalProducts`, `coverage_scope.kind = credit_line_tranche`
+- транш КЛ: `GetReissueTrancheAvailableAdditionalProducts`; list — `coverage_scope_kind=credit_line_tranche` (займовый контекст опционален); select — `coverage_scope.kind=credit_line_tranche`
 
 Можно завести сразу как follow-up, но не включать в критерии готовности волны 1.
 

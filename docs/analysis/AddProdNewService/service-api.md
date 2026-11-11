@@ -61,7 +61,7 @@ POST /api/v1/registries/ready | partner-code | sent
 
 Обязательные поля: `client_ref`, `channel`.
 
-Опциональные: `requested_amount`, `term_days`, `operation_kind`, `loan_kind`, `cash_delivery` (`cash`|`cashless`), `platform` (`android`|`ios`|`web`), `deal_scenario`, `subdivision`, `client_is_repeat`, `contour` (`production`|`test`, default `production`).
+Опциональные: `coverage_scope_kind` (транш КЛ: `credit_line_tranche`), `requested_amount`, `term_days`, `operation_kind`, `loan_kind`, `cash_delivery` (`cash`|`cashless`), `platform` (`android`|`ios`|`web`), `deal_scenario`, `subdivision`, `client_is_repeat`, `contour` (`production`|`test`, default `production`).
 
 Ответ: `decision_id` + `offers[]`. Оффер: `offer_id`, `total_price`, `catalog_total`, `combo`, `supersedes`, `expires_at`, `items[]`.
 
