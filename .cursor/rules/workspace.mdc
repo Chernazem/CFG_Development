@@ -18,3 +18,5 @@ alwaysApply: true
 - Внешние клоны инструментов — `.tools/`; перед HTTP к данным ИБ — `docs/setup/1c-llm-requests.md`, минимальные права.
 - Пути в скриптах и docs — относительно корня текущего workspace, не зашивать старый `D:\Dev Projects\TB`.
 - Чат агента остаётся в этом workspace. Не вызывать `move_agent_to_root` / `move_agent_to_cloned_root` для `repos/DEV-*`: worktree — каталог внутри проекта, не новый корень агента.
+
+- Handoff EPF/CFE/логов TB-PC ↔ основной ПК — rtifacts/exchange/ (правило 	b-pc-artifacts-exchange.mdc), не Яндекс.Диск и не GitLab main.

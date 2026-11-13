@@ -113,6 +113,12 @@ Jira: `JIRA_URL`, `JIRA_LOGIN`, `JIRA_PASSWORD`. Не копировать зн�
 3. `.cursor/rules/` workspace (оркестрация, выбор репо)
 4. Skills ролей (общие)
 
+## Обмен артефактами (TB-PC ↔ основной ПК)
+
+Точечная передача EPF/CFE/логов — каталог [rtifacts/exchange/](artifacts/exchange/README.md) в этом репозитории + GitHub-ссылка после push.
+Правило: [.cursor/rules/tb-pc-artifacts-exchange.mdc](.cursor/rules/tb-pc-artifacts-exchange.mdc), runbook: [docs/setup/tb-pc-artifacts-exchange.md](docs/setup/tb-pc-artifacts-exchange.md).
+Не класть тестовые обработки в GitLab-ветки «ради скачивания» и не использовать Яндекс.Диск для таких handoff.
+
 ## Ограничения
 
 - Не смешивать в одном PR изменения разных репозиториев без явного плана.

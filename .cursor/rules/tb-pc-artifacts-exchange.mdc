@@ -1,0 +1,31 @@
+---
+description: Обмен артефактами TB-PC ↔ основной ПК через artifacts/exchange (не Яндекс.Диск)
+alwaysApply: true
+---
+
+# Обмен артефактами TB-PC ↔ основной ПК
+
+Для передачи EPF/CFE/логов/zip между **TB-PC** и основным компьютером используй git-каталог workspace, не Яндекс.Диск.
+
+## Каталог
+
+- rtifacts/exchange/tb-pc-to-main/DEV-XXXXXX/ — собрано на TB-PC → скачать на основной ПК
+- rtifacts/exchange/main-to-tb-pc/DEV-XXXXXX/ — с основного ПК → забрать на TB-PC
+- Описание: rtifacts/exchange/README.md, runbook: docs/setup/tb-pc-artifacts-exchange.md
+
+## Обязательно
+
+1. Класть handoff-артефакты только в rtifacts/exchange/... (подкаталог по DEV-XXXXXX или misc/YYYY-MM-DD-тема).
+2. Рядом короткий NOTES.md (что за файл, для какой ИБ/задачи, дата).
+3. Commit + push **корневого** репозитория workspace (CFG_Development), затем дать пользователю **GitHub raw/blob** ссылку на скачивание.
+4. Для .epf/.cfe/.zip в этом каталоге — Git LFS; при необходимости git add -f (глобальный ignore *.epf перекрыт исключениями).
+
+## Запрещено для handoff
+
+- Класть EPF/CFE «для скачать коллеге» в GitLab conf-main / extensions «чтобы ушло в main».
+- Передавать такие файлы через Яндекс.Диск / _AI, если достаточно rtifacts/exchange.
+- Секреты, .dt / .1cd, полные выгрузки ИБ.
+
+## Когда Яндекс ещё ок
+
+Массовый sync overlay/skills/docs (	ools/scripts/sync-tb-workspace-yandex.ps1) — отдельно от точечного handoff бинарников.
