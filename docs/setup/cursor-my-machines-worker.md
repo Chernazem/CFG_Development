@@ -31,6 +31,8 @@ NO_PROXY=localhost,127.0.0.1,.centrofinans.ru,centrofinans.ru,jenkins.centrofina
 
 `start-tb-cursor-worker.ps1` **больше не сбрасывает** proxy: если переменные заданы в `tb-worker.env`, они остаются у процесса `agent worker`. Внутренние `*.centrofinans.ru` идут мимо proxy через `NO_PROXY` (OpenVPN). После правки env — перезапуск задачи `TB-Cursor-Worker`.
 
+Устойчивость: перед стартом скрипт ждёт, пока `api2.cursor.sh` доступен через proxy; при падении `agent worker` (в т.ч. `Failed to reach the Cursor API`) крутит retry без выхода. Задача `TB-Cursor-Worker-Watchdog` раз в 5 минут поднимает worker, если процесса нет. Старый `TB-Autostart-CursorWorker` (без proxy) держать **Disabled** — иначе region 403.
+
 На TB-PC one-shot из Яндекс `_AI` (после синхронизации папки):
 
 - `fix-tb-cursor-worker-proxy.bat` — Apply overlay, запись proxy из `TB-workspace\secrets\cursor-https-proxy.url`, restart `TB-Cursor-Worker`.
@@ -39,6 +41,12 @@ NO_PROXY=localhost,127.0.0.1,.centrofinans.ru,centrofinans.ru,jenkins.centrofina
 `launch-tb-machine-agent.ps1` передаёт тот же proxy в `curl -x`.
 
 Не использовать Cursor-hosted Cloud VM: там нет 1С, `ibcmd`, Jenkins VPN.
+
+## Обмен мелкими артефактами (без Яндекс.Диска)
+
+EPF/CFE/логи для передачи между TB-PC и основным ПК кладите в [rtifacts/exchange/](../../artifacts/exchange/README.md) и скачивайте по GitHub-ссылке. Подробности: [tb-pc-artifacts-exchange.md](tb-pc-artifacts-exchange.md).
+
+Полный sync overlay через Яндекс (sync-tb-workspace-yandex.ps1) для skills/docs по-прежнему ок.
 
 ## GitLab без окна Credential Manager
 

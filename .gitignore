@@ -69,3 +69,13 @@ secrets/
 # Персональные досье: ФИО, траты на ИИ, активность
 ai-effectiveness/people/
 
+# TB-PC <-> main PC exchange artifacts (override *.epf / DEV-* ignore)
+!artifacts/
+!artifacts/exchange/
+!artifacts/exchange/**
+!artifacts/exchange/**/*.epf
+!artifacts/exchange/**/*.erf
+!artifacts/exchange/**/*.cfe
+!artifacts/exchange/**/*.zip
+!artifacts/exchange/**/*.json
+!artifacts/exchange/**/*.md
