@@ -11,9 +11,6 @@
     },
     "graylog-rt": {
       "url": "https://mcp-graylog-oauth.m.dcrt.centrofinans.ru/mcp"
-    },
-    "edt": {
-      "url": "http://localhost:8765/mcp"
     }
   }
 }

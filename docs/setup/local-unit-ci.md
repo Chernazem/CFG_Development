@@ -1,6 +1,6 @@
-# Локальный CI и Unit-тесты conf-main (запасной контур)
+# Локальный CI и Unit-тесты conf-main
 
-**Канон на TB-PC — YAXUnit через EDT MCP** (`run_yaxunit_tests`), см. [`edt-mcp.md`](edt-mcp.md). Скрипт ниже — только если EDT MCP недоступен.
+**Канон на TB-PC** — скрипт ниже (vrunner / Vanessa-ADD). EDT MCP не использовать.
 
 Канонический reusable-скрипт:
 

@@ -18,7 +18,7 @@ Jira: DEV-78068. Промпт задачи: `DEV-78068/prompts/developer.md`.
 3. Сборка и POST observations (батч до 200): available/shown ключи обязательны; decision_id одна строка-UUID или null; shown_to_client из режима настроек.
 4. Unit: ok / timeout / http_error / not_called; идемпотентность attempt_ref; fail-open (исключение не всплывает). **Статические данные только в XML-фикстурах** (не конструкторы в `// Дано`).
 5. Очистка устаревших записей журнала: срок в днях в настройках интеграции; автоочистка, чтобы JSON не раздувал ИБ (см. implementation-plan APNS-004 «Хранение журнала»).
-5a. Unit на TB-PC через **старый флоу** `tools/scripts/invoke-conf-main-local-unit.ps1` (`docs/setup/local-unit-ci.md`), **без EDT MCP**.
+5a. Unit на TB-PC через `tools/scripts/invoke-conf-main-local-unit.ps1` (`docs/setup/local-unit-ci.md`); код — LSP (`docs/setup/lsp-task-clones.md`).
 5b. **Обязательно LSP** (локальная замена Sonar): проект task-клона по `docs/setup/lsp-task-clones.md`, все правила диагностики включены; перед push — diagnostics по изменённым модулям. Self-review по AGENTS.md. Push + MR + Jenkins heartbeat 30m.
 6. **Обязательно:** SonarQube Quality Gate по MR = **OK** (`docs/setup/sonarqube-quality-gate.md`). Красный QG — блокер: фикс → push → новый мониторинг. Готовность только при зелёном QG.
 

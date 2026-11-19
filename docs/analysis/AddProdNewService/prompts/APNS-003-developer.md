@@ -13,7 +13,7 @@ Jira: DEV-78067. Промпт задачи: `DEV-78067/prompts/developer.md`.
 2. Модуль(и) маппинга: КаналыПродаж → channel/cash_delivery/platform; вид займа → loan_kind; настройка → legacy_setting_id; пилот cashback/guarantee/sberhealth.
 3. «Не указан» канал — не маппить в shadow.
 4. Unit на таблицу соответствий / граничные значения.
-5. Unit через `invoke-conf-main-local-unit.ps1` (`docs/setup/local-unit-ci.md`), **без EDT MCP**.
+5. Unit через `invoke-conf-main-local-unit.ps1` (`docs/setup/local-unit-ci.md`); код — LSP (`docs/setup/lsp-task-clones.md`).
 5a. Обязателен LSP на task-клоне (`docs/setup/lsp-task-clones.md`), все правила включены. Затем MR.
 6. SonarQube Quality Gate по MR = **OK** (`docs/setup/sonarqube-quality-gate.md`); иначе фикс и новый цикл Jenkins.
 

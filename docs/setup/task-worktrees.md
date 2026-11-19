@@ -1,6 +1,6 @@
 # Task-клоны через git worktree
 
-Канонический способ изоляции DEV-задачи — **linked worktree** от эталонного клона, а не второй `git clone`. Каталог тот же: `repos/DEV-123 conf-main`. EDT MCP, Unit и `.cursorignore` смотрят на путь рабочего дерева (`docs/setup/edt-mcp.md`).
+Канонический способ изоляции DEV-задачи — **linked worktree** от эталонного клона, а не второй `git clone`. Каталог тот же: `repos/DEV-123 conf-main`. LSP, Unit и `.cursorignore` смотрят на путь рабочего дерева (`docs/setup/lsp-task-clones.md`, `docs/setup/local-unit-ci.md`).
 
 Эталон `repos/<id>/` остаётся на default-ветке (для `conf-main` — `main`) и не является рабочим деревом задачи.
 
@@ -44,8 +44,8 @@ git -C "repos/DEV-123 conf-main" status --short --branch
 
 - Правки, commit, push — только в worktree.
 - `git pull`/`push` в worktree обычные; `git fetch` можно в эталоне.
-- EDT MCP: проекты `DEV-123-TB` / `DEV-123-tests` на `src/cf` и `src/tests` worktree (`docs/setup/edt-mcp.md`).
-- Unit: `run_yaxunit_tests` по этим проектам; запасной vrunner — `-RepoRoot` на каталог worktree.
+- LSP: проект на каталог worktree (`docs/setup/lsp-task-clones.md`).
+- Unit: `tools/scripts/invoke-conf-main-local-unit.ps1 -RepoRoot` на каталог worktree (`docs/setup/local-unit-ci.md`). EDT MCP не использовать.
 - Не открывать эталон и worktree как два равноправных корня для правок одной задачи.
 - Чат агента остаётся в корневом workspace TB. Не вызывать `move_agent_to_root` / `move_agent_to_cloned_root` и не открывать `repos/DEV-*` как новый корень агента: иначе чат пропадёт из списка мультирепо-проекта.
 
@@ -58,6 +58,6 @@ git -C repos/conf-main worktree remove --force "..\DEV-123 conf-main"
 git -C repos/conf-main worktree prune
 ```
 
-`--force` только если пользователь подтвердил зачистку при грязном дереве. Затем убрать EDT-проекты задачи и каталог `DEV-123/` артефакты.
+`--force` только если пользователь подтвердил зачистку при грязном дереве. Затем убрать LSP-проект задачи и каталог `DEV-123/` артефакты.
 
 Полный второй clone допустим только если worktree невозможно создать (сломанный `.git` эталона после неудачного ACL self-heal). Это исключение, не правило.

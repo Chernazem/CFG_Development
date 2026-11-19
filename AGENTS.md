@@ -4,7 +4,7 @@ Workspace объединяет **несколько git-репозиториев
 
 Для **TB** основной документ — [`repos/conf-main/AGENTS.md`](repos/conf-main/AGENTS.md) (в GitLab, не перезаписывать краткой заглушкой). Workspace-правила в `.cursor/rules/` только дополняют его.
 
-Канонический чеклист разработки: [`.cursor/rules/critical-flow.mdc`](.cursor/rules/critical-flow.mdc). Подробности EDT MCP, Jenkins и сети — в [`docs/setup/`](docs/setup/). Не копировать эти runbook'и в каждый ответ.
+Канонический чеклист разработки: [`.cursor/rules/critical-flow.mdc`](.cursor/rules/critical-flow.mdc). Подробности LSP, local-unit, Jenkins и сети — в [`docs/setup/`](docs/setup/). Не копировать эти runbook'и в каждый ответ. **EDT MCP не использовать** (отложено; не вызывать сервер `edt` / инструменты EDT MCP).
 
 ## Уровни
 
@@ -20,16 +20,16 @@ Workspace объединяет **несколько git-репозиториев
 1. Целевой репозиторий + его `AGENTS.md`.
 2. Эталон по default-ветке remote, затем изоляция worktree: `DEV-123/` и `repos/DEV-123 <id>/` (`docs/setup/task-worktrees.md`).
 3. **Ключ Jira `DEV-XXXXXX` обязателен** в имени ветки, каждом коммите и заголовке/описании MR (см. [`.cursor/rules/dev-task-key-required.mdc`](.cursor/rules/dev-task-key-required.mdc)). Без ключа — не создавать ветку/не коммитить/не открывать MR.
-4. EDT-проекты задачи на TB-PC: `src/cf` и `src/tests` (`docs/setup/edt-mcp.md`). Чат агента остаётся в корне TB, не `move_agent_to_root`.
-5. Проверка кода task-клона: EDT MCP (`get_project_errors`) **или**, если EDT MCP не готов, **обязательный LSP** на проекте task-клона (`docs/setup/lsp-task-clones.md`) — локальная замена Sonar; все правила LSP включены.
-6. Unit для `conf-main` на TB-PC: `run_yaxunit_tests` **или** `tools/scripts/invoke-conf-main-local-unit.ps1`. При запасном контуре LSP + local-unit **оба** обязательны перед push.
+4. LSP-проект задачи на TB-PC на каталог task-клона (`docs/setup/lsp-task-clones.md`). Чат агента остаётся в корне TB, не `move_agent_to_root`.
+5. Проверка кода task-клона: **обязательный LSP** (`docs/setup/lsp-task-clones.md`) — локальная замена Sonar; все правила LSP включены. EDT MCP не вызывать.
+6. Unit для `conf-main` на TB-PC: `tools/scripts/invoke-conf-main-local-unit.ps1` (`docs/setup/local-unit-ci.md`). **LSP + local-unit оба обязательны** перед push.
 7. Тесты: бизнес-кейсы, **статические данные только в XML-макетах фикстур** (не конструкторы в `// Дано`; `repos/conf-main/src/AGENTS.md` → «Фикстуры»), строгое равенство эталону; свежий `genericExecution.xml` содержит все новые/изменённые testCase задачи.
 8. Pre-push self-review по `AGENTS.md` целевого репо + шаблон ниже.
 9. После push — актуальное описание MR, затем мониторинг Jenkins (в Cursor: Automation или `/loop 30m`, не оставлять heartbeat после terminal result). **Три `ABORTED` подряд** по одному MR — стоп рестартов, ждать команды (`docs/setup/jenkins-aborted-builds.md`).
 10. В терминальной MR-сборке обязателен **зелёный SonarQube Quality Gate** ([`docs/setup/sonarqube-quality-gate.md`](docs/setup/sonarqube-quality-gate.md)); красный QG — блокер, фикс → новый push → новый мониторинг.
 11. Готовность — только если локальные проверки по задаче зелёные, MR актуален, внешняя сборка не падает из-за наших изменений, **Sonar QG OK**.
 
-Подробности: [`docs/setup/task-worktrees.md`](docs/setup/task-worktrees.md), [`docs/setup/edt-mcp.md`](docs/setup/edt-mcp.md), [`docs/setup/gitlab-mr-encoding.md`](docs/setup/gitlab-mr-encoding.md), [`docs/setup/sonarqube-quality-gate.md`](docs/setup/sonarqube-quality-gate.md).
+Подробности: [`docs/setup/task-worktrees.md`](docs/setup/task-worktrees.md), [`docs/setup/lsp-task-clones.md`](docs/setup/lsp-task-clones.md), [`docs/setup/local-unit-ci.md`](docs/setup/local-unit-ci.md), [`docs/setup/gitlab-mr-encoding.md`](docs/setup/gitlab-mr-encoding.md), [`docs/setup/sonarqube-quality-gate.md`](docs/setup/sonarqube-quality-gate.md).
 
 ## Pre-push статус
 
@@ -38,10 +38,10 @@ Pre-push gate:
 - Repo AGENTS read: <path>
 - Task clone: <path>
 - DEV key in branch/commits/MR title: DEV-XXXXXX present / BLOCKED (missing)
-- EDT MCP: <get_server_status / plugin+EDT version> | skipped (not ready)
-- Code check: get_project_errors ERRORS on changed objects — none / list | OR LSP diagnostics on task-clone project — none / list
+- EDT MCP: not used (deferred) — do not call
+- Code check: LSP diagnostics on task-clone project — none / list
 - LSP: project running for task-clone; all diagnostic rules enabled in LSP service — yes/no/evidence
-- Unit: run_yaxunit_tests jobId / report path | OR invoke-conf-main-local-unit.ps1 + DEV-*/local-ci report
+- Unit: invoke-conf-main-local-unit.ps1 + DEV-*/local-ci report
 - Unit report freshness/completeness: fresh report, normal runner finish, all new/changed task testCase names present
 - Unit/external failures caused by task: none / list with reasoning
 - Unit-test quality self-review: business cases + XML fixtures for static data (no BSL constructors in Given) + strict expected equality checked
@@ -104,7 +104,7 @@ Jira: `JIRA_URL`, `JIRA_LOGIN`, `JIRA_PASSWORD`. Не копировать зн�
 2. Перед task-клоном обновить эталон по default-ветке remote.
 3. Рабочее дерево — **git worktree** `repos/DEV-123 <id>/` от эталона (пример: `repos/DEV-123 conf-main`). Не второй clone. В эталонах из `manifest.yaml` задачу не вести. Команды: [`docs/setup/task-worktrees.md`](docs/setup/task-worktrees.md). Чат агента **не** переносить в этот каталог (`move_agent_to_root` / `move_agent_to_cloned_root` запрещены): worktree внутри текущего workspace.
 4. Скрипты CI — только `tools/scripts/`, не копировать в `DEV-*`.
-5. По явному «задача завершена» — `git worktree remove` (если дерево чистое), EDT-проекты задачи (`delete_project` при необходимости) и каталог `DEV-123/`.
+5. По явному «задача завершена» — `git worktree remove` (если дерево чистое), LSP-проект задачи и каталог `DEV-123/`.
 
 ## Приоритет правил
 
@@ -112,12 +112,6 @@ Jira: `JIRA_URL`, `JIRA_LOGIN`, `JIRA_PASSWORD`. Не копировать зн�
 2. `repos/<id>/AGENTS.md`
 3. `.cursor/rules/` workspace (оркестрация, выбор репо)
 4. Skills ролей (общие)
-
-## Обмен артефактами (TB-PC ↔ основной ПК)
-
-Точечная передача EPF/CFE/логов — каталог [rtifacts/exchange/](artifacts/exchange/README.md) в этом репозитории + GitHub-ссылка после push.
-Правило: [.cursor/rules/tb-pc-artifacts-exchange.mdc](.cursor/rules/tb-pc-artifacts-exchange.mdc), runbook: [docs/setup/tb-pc-artifacts-exchange.md](docs/setup/tb-pc-artifacts-exchange.md).
-Не класть тестовые обработки в GitLab-ветки «ради скачивания» и не использовать Яндекс.Диск для таких handoff.
 
 ## Ограничения
 
