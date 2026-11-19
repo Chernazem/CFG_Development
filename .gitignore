@@ -35,11 +35,11 @@ packagedef.lock
 .tools/
 !.tools/.gitkeep
 
-# Local CI artifacts and DEV task working dirs
+# Local CI artifacts and DEV task working dirs (only workspace root)
 .local-ci/
 .local-ci-runlogs/
 .local-tools/
-DEV-*/
+/DEV-*/
 .tmp*
 .tmp-*/
 
