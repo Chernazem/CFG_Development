@@ -551,13 +551,24 @@ function Load-Bsp {
 }
 
 function Update-Test-Extension {
-    Invoke-Tool $VRunner @(
-        'compileexttocfe',
-        '--src', 'src/tests',
-        '--out', $TestCfe,
-        '--nocacheuse',
-        '--v8version', $V8Version
-    )
+    # Empty temp IB cannot resolve DesignTimeRef to parent enums (e.g. ВидыВзаимодействий.ТелефонныйЗвонок).
+    # After UpdateConfig the task IB already has parent CF — compile into it with --current.
+    $oldRunnerDbUser = $env:RUNNER_DBUSER
+    Set-RunnerDbUserForCommand
+    try {
+        $compileArgs = @(
+            'compileexttocfe',
+            '--src', 'src/tests',
+            '--out', $TestCfe,
+            '--current',
+            '--ibconnection', $ConnectionString,
+            '--nocacheuse',
+            '--v8version', $V8Version
+        ) + (Get-DbUserArguments)
+        Invoke-Tool $VRunner $compileArgs
+    } finally {
+        Restore-RunnerDbUser $oldRunnerDbUser
+    }
 
     Load-Extension $TestCfe $STestExtName -Overwrite
 }
@@ -636,7 +647,14 @@ function Invoke-InitialData {
 function Invoke-Unit {
     Ensure-Directory $ArtifactsRoot
     Ensure-Directory $RuntimeParamsDir
-    Ensure-Directory (Join-Path $TempDir 'xunit\allure')
+    $allureDir = Join-Path $TempDir 'xunit\allure'
+    $genericExecutionPath = Join-Path $TempDir 'genericExecution.xml'
+    $xddExitCodePath = Join-Path $TempDir 'tests-results\xunit\xddExitCodePath.txt'
+    Ensure-Directory $allureDir
+    Ensure-Directory (Split-Path -Parent $xddExitCodePath)
+    # Avoid clobbering shared TEMP VAParams when several DEV-* unit runs overlap.
+    $taskVAParams = Join-Path $ArtifactsRoot 'VAParams.local.json'
+    $taskXddLog = Join-Path $ArtifactsRoot 'xddlog.log'
     $savedDbUserParameter = $DbUser
     if (-not $script:DbUser) {
         $script:DbUser = $UnitDbUser
@@ -646,21 +664,33 @@ function Invoke-Unit {
         Ensure-LocalAddRunner
         @{
             (U '0JTQtdC70LDRgtGM0JvQvtCz0JLRi9C/0L7Qu9C90LXQvdC40Y/QodGG0LXQvdCw0YDQuNC10LLQktCi0LXQutGB0YLQvtCy0YvQudCk0LDQudC7') = (U '0JjRgdGC0LjQvdCw')
-            (U '0JjQvNGP0KTQsNC50LvQsNCb0L7Qs9CS0YvQv9C+0LvQvdC10L3QuNGP0KHRhtC10L3QsNGA0LjQtdCy') = $XddLog
+            (U '0JjQvNGP0KTQsNC50LvQsNCb0L7Qs9CS0YvQv9C+0LvQvdC10L3QuNGP0KHRhtC10L3QsNGA0LjQtdCy') = $taskXddLog
         } | ConvertTo-Json | ForEach-Object {
-            [IO.File]::WriteAllText($LocalVAParams, [string]$_, (New-Object System.Text.UTF8Encoding $false))
+            [IO.File]::WriteAllText($taskVAParams, [string]$_, (New-Object System.Text.UTF8Encoding $false))
+        }
+
+        # Prefer task-local settings with absolute report paths. Avoid --reportsxunit with Cyrillic
+        # names: PowerShell->cmd encoding breaks the path and vanessa-runner then fails on testsPath.
+        $settingsPath = Join-Path $ArtifactsRoot 'vrunnerXUnit.local.json'
+        if (-not (Test-Path -LiteralPath $settingsPath)) {
+            $settingsPath = 'build/vrunnerXUnit.json'
         }
 
         Set-RunnerDbUserForCommand
+        # Positional testsPath + --config-tests are required: settings alone leave vanessa-runner
+        # with an empty path and it fails in КлючЗапускаЗагрузчика (ArgumentException invalid path).
         $args = @(
             'xunit',
-            '--settings', 'build/vrunnerXUnit.json',
+            $STestExtName,
+            '--config-tests',
+            '--settings', $settingsPath,
             '--ibconnection', $ConnectionString,
             '--v8version', $V8Version,
             '--additional', '/AllowExecuteScheduledJobs -Off /DisableUnrecoverableErrorMessage',
             '--workspace', $RepoRoot,
-            '--xddConfig', $LocalVAParams,
-            '--pathxunit', $LocalXddRunner
+            '--xddConfig', $taskVAParams,
+            '--pathxunit', $LocalXddRunner,
+            '--xddExitCodePath', $xddExitCodePath
         ) + (Get-DbUserArguments)
         $exitCode = Invoke-ToolAllowFail $VRunner $args
 
