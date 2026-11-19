@@ -14,3 +14,4 @@ alwaysApply: true
 - Один change set — один репозиторий, если задача не помечена как кросс-репозиторная.
 - Пути в скриптах и docs — от корня текущего workspace. `D:\Dev Projects\TB` — только корень worker на TB-PC.
 - Чат остаётся в этом workspace: `.cursor/rules/keep-agent-in-workspace.mdc`.
+- Handoff EPF/CFE/логов TB-PC ↔ основной ПК — `artifacts/exchange/` (`.cursor/rules/tb-pc-artifacts-exchange.mdc`), не Яндекс.Диск и не GitLab product main.

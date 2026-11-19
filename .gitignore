@@ -8,6 +8,13 @@
 *.lgp
 *.lck
 
+# Handoff binaries TB-PC ↔ main PC (Git LFS; see .gitattributes)
+!artifacts/exchange/**/*.epf
+!artifacts/exchange/**/*.erf
+!artifacts/exchange/**/*.cfe
+!artifacts/exchange/**/*.zip
+!artifacts/exchange/**/*.7z
+
 # Выгрузка / служебные каталоги платформы
 /out/
 /build/
