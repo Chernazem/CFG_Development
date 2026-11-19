@@ -1,20 +1,16 @@
 ﻿---
-description: Правила уровня рабочей области TB (мультирепозиторий)
+description: Оболочка CFG_Development — канон флоу, skills, скриптов и правил
 alwaysApply: true
 ---
 
-# Workspace TB
+# Workspace CFG_Development
 
-- Перед разработкой следуй `.cursor/rules/critical-flow.mdc`.
-- Код конфигураций — только внутри `repos/<id>/`, не в корне workspace.
-- Перед правками определи целевой репозиторий: `repos/manifest.yaml` или уточни у пользователя.
-- **TB / ТБ** = `conf-main` → `repos/conf-main/`; инструкции агента — `repos/conf-main/AGENTS.md` (приоритет над workspace).
-- **TB_ext / расширения** = `extensions` → `repos/extensions/`.
-- **tb_api / swagger** = `api-swagger` → `repos/api-swagger/`.
-- Правила репозитория (`.cursor/rules/` внутри `repos/<id>/`) **важнее** общих.
-- Кросс-репо ТЗ и ADR — `docs/` корня; локальные — `repos/<id>/docs/`.
+Корень workspace — git `CFG_Development` (`git@github.com:Chernazem/CFG_Development.git`, ветка `main`). Это основной репозиторий флоу, skills, скриптов и правил. Исходники 1С в него не коммитить.
+
+- Актуальность оболочки: `tools/scripts/update-cfg-development-shell.ps1` в старте задачи и раз в сутки на каждой машине (`docs/setup/shell-sync.md`). Это не обновление эталонов `repos/conf-main`, `repos/extensions`, `repos/api-swagger`. Между машинами оболочку возит git, не Яндекс.Диск.
+- Правки `.cursor/rules/`, `.cursor/skills/`, `tools/scripts/`, `docs/setup/`, корневого `AGENTS.md` коммитить только в `CFG_Development`. Чеклист `.cursor/rules/critical-flow.mdc` на такие правки не распространяется.
+- Код конфигураций — только `repos/<id>/` по `repos/manifest.yaml`. **TB** = `conf-main`, **TB_ext** = `extensions`, **tb_api** = `api-swagger`. Для этого кода приоритет у `repos/<id>/AGENTS.md`.
+- Роли — корневой `AGENTS.md`. Каталог `cf-*` / `db-*` / `form-*` вызывать по имени (`docs/setup/cc-1c-skills.md`).
 - Один change set — один репозиторий, если задача не помечена как кросс-репозиторная.
-- Роли и отдельские навыки — `.cursor/skills/`; каталог `cf-*`/`db-*`/`form-*` вызывать по имени. Состав: `docs/setup/ai-rules.md`, `docs/setup/cc-1c-skills.md`.
-- Внешние клоны инструментов — `.tools/`; перед HTTP к данным ИБ — `docs/setup/1c-llm-requests.md`, минимальные права.
-- Пути в скриптах и docs — относительно корня текущего workspace, не зашивать старый `D:\Dev Projects\TB`.
-- Чат агента остаётся в этом workspace. Не вызывать `move_agent_to_root` / `move_agent_to_cloned_root` для `repos/DEV-*`: worktree — каталог внутри проекта, не новый корень агента.
+- Пути в скриптах и docs — от корня текущего workspace. `D:\Dev Projects\TB` — только корень worker на TB-PC.
+- Чат остаётся в этом workspace: `.cursor/rules/keep-agent-in-workspace.mdc`.

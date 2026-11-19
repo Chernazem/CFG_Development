@@ -12,7 +12,7 @@
 | `1c-project-manager` | План и постановка задач; исполнители на My Machines worker, не локальные субагенты этого ПК. |
 | `1c-queries` | Запросы к ИБ: MCP `execute_1c_query` или fallback `tools/scripts/query-1c-llm-requests.ps1`. |
 | `1c-external-epf-authoring` | Внешние обработки `epf`, структура выгрузки, `vrunner compileepf`. |
-| `1c-test-first-development` | Test-first доработки с YaxUnit; на TB-PC проверка кода и прогон — EDT MCP. |
+| `1c-test-first-development` | Test-first доработки с YaxUnit; на TB-PC проверка кода — LSP, прогон — `invoke-conf-main-local-unit.ps1`. |
 | `requirements-writer` | Постановка FNC/ARC в стиле Confluence, результат — Cursor Canvas. |
 | `confluence-wiki-search` | Семантический поиск по wiki через n8n webhook. |
 | `1c-bsp-check` | Проверка значения параметра только `ОбщегоНазначенияКлиентСервер.Проверить`. |

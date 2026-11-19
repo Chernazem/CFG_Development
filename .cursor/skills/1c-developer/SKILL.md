@@ -21,7 +21,7 @@ description: >-
 4. Найти существующие модули/паттерны; не дублировать общие процедуры.
 5. Реализовать минимальный рабочий инкремент **только в целевом репо**.
 6. Кратко описать изменения и что проверить вручную в клиенте 1С.
-7. Новую функциональность в `src/cf` или расширении вести test-first (`1c-test-first-development`), пока пользователь явно не отменил TDD. На TB-PC проверка BSL и YAXUnit — через EDT MCP (`docs/setup/edt-mcp.md`), не через `lsp-skill` и не через `invoke-conf-main-local-unit.ps1`.
+7. Новую функциональность в `src/cf` или расширении вести test-first (`1c-test-first-development`), пока пользователь явно не отменил TDD. На TB-PC проверка BSL — `lsp-skill diagnostics` (`docs/setup/lsp-task-clones.md`), Unit — `tools/scripts/invoke-conf-main-local-unit.ps1`. EDT не использовать.
 
 ## Качество
 

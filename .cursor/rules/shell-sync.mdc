@@ -1,0 +1,12 @@
+---
+description: Подхватывать правила CFG_Development при старте задачи и раз в сутки
+alwaysApply: true
+---
+
+# Актуальность оболочки
+
+Источник правил — `origin/main` репозитория `CFG_Development` в корне workspace. Ноутбук и `TB-PC` проверяют его каждый сам.
+
+- В старте продуктовой задачи и если `.local-ci/cfg-development-sync.txt` старше 24 часов запусти `tools/scripts/update-cfg-development-shell.ps1`.
+- Код 0 — продолжать. Код 2 или 1 — остановиться: задачу не вести на правилах позади `origin/main`.
+- Канон: `docs/setup/shell-sync.md`.

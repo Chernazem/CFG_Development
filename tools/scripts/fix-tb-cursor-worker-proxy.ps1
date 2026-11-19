@@ -1,10 +1,12 @@
-# Apply TB overlay, write Cursor HTTPS proxy into tb-worker.env, restart My Machines worker.
+# Write Cursor HTTPS proxy into tb-worker.env and restart the My Machines worker.
+# Shell files come from the CFG_Development clone. Yandex overlay is off unless -UseYandexOverlay.
 # Invoked by fix-tb-cursor-worker-proxy.bat on TB-PC. ASCII-only for Windows PowerShell 5.1.
 
 [CmdletBinding()]
 param(
     [string]$AiRoot = '',
-    [string]$WorkspaceRoot = 'D:\Dev Projects\TB'
+    [string]$WorkspaceRoot = 'D:\Dev Projects\TB',
+    [switch]$UseYandexOverlay
 )
 
 $ErrorActionPreference = 'Stop'
@@ -45,15 +47,6 @@ function Resolve-ProxyUrl {
     throw 'Proxy URL not found. Need TB-workspace\secrets\cursor-https-proxy.url or Cursor http.proxy.'
 }
 
-$AiRoot = Find-AiRoot -Hint $AiRoot
-$bundle = Join-Path $AiRoot 'TB-workspace'
-if (-not (Test-Path -LiteralPath $bundle)) {
-    throw "Bundle not found: $bundle (wait for Yandex sync)"
-}
-
-Write-Step "AI root: $AiRoot"
-Write-Step "Bundle: $bundle"
-
 if (-not (Test-Path -LiteralPath $WorkspaceRoot)) {
     foreach ($c in @('D:\Dev Projects\TB', 'D:\Codex Projects\TB', 'C:\Dev Projects\TB')) {
         if (Test-Path -LiteralPath (Join-Path $c 'repos\manifest.yaml')) {
@@ -67,14 +60,23 @@ if (-not (Test-Path -LiteralPath (Join-Path $WorkspaceRoot 'repos\manifest.yaml'
 }
 Write-Step "Workspace: $WorkspaceRoot"
 
-$syncScript = Join-Path $bundle 'overlay\tools\scripts\sync-tb-workspace-yandex.ps1'
-if (-not (Test-Path -LiteralPath $syncScript)) {
-    throw "Missing overlay sync script: $syncScript"
+$bundle = ''
+if ($UseYandexOverlay) {
+    $AiRoot = Find-AiRoot -Hint $AiRoot
+    $bundle = Join-Path $AiRoot 'TB-workspace'
+    if (-not (Test-Path -LiteralPath $bundle)) {
+        throw "Bundle not found: $bundle"
+    }
+    Write-Step "AI root: $AiRoot"
+    $syncScript = Join-Path $bundle 'overlay\tools\scripts\sync-tb-workspace-yandex.ps1'
+    if (-not (Test-Path -LiteralPath $syncScript)) {
+        throw "Missing overlay sync script: $syncScript"
+    }
+    Write-Step 'Applying Yandex overlay by explicit request...'
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $syncScript `
+        -Action Apply -WorkspaceRoot $WorkspaceRoot -YandexAiDir $AiRoot
+    if ($LASTEXITCODE -ne 0) { throw "overlay Apply failed with exit $LASTEXITCODE" }
 }
-Write-Step 'Applying overlay...'
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $syncScript `
-    -Action Apply -WorkspaceRoot $WorkspaceRoot -YandexAiDir $AiRoot
-if ($LASTEXITCODE -ne 0) { throw "overlay Apply failed with exit $LASTEXITCODE" }
 
 $proxyUrl = Resolve-ProxyUrl -BundleRoot $bundle
 Write-Step ("Proxy host: {0}" -f ([uri]$proxyUrl).Host)

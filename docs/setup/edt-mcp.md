@@ -1,14 +1,18 @@
-# EDT MCP на TB-PC
+# EDT MCP на TB-PC (архив)
 
-Канонический контур проверки кода и локального YAXUnit для агентов на машине `TB-PC`. Плагин: [DitriXNew/EDT-MCP](https://github.com/DitriXNew/EDT-MCP). LSP (`lsp-skill` / `bsl-language-server`) и `invoke-conf-main-local-unit.ps1` — запасной путь, если EDT MCP недоступен.
+Этот runbook не канон и не выполняется. Проверка кода — [`lsp-task-clones.md`](lsp-task-clones.md). Локальный Unit — [`local-unit-ci.md`](local-unit-ci.md).
+
+Ниже сохранены прошлые заметки по плагину [DitriXNew/EDT-MCP](https://github.com/DitriXNew/EDT-MCP). По ним задачи не вести.
 
 Источник правды в git по-прежнему XML-выгрузка (`src/cf`, `src/tests`). EDT на контуре индексирует эти каталоги и гоняет проверки/тесты; в git не коммитить `.project` / `.settings` / `.metadata` / `.edt-workspace`.
 
 MCP слушает **localhost TB-PC** (`http://127.0.0.1:8765/mcp`). С ноутбука PM этот URL недоступен — проверка только у агентов на My Machines.
 
-## Соответствие старому контуру
+## Архивная таблица перехода
 
-| Было | Стало (TB-PC) |
+Не применять. Колонка «Стало» описывает отказ от LSP в пользу EDT и текущему канону не соответствует.
+
+| Было | Стало (архив) |
 |------|----------------|
 | LSP-проект на `repos/DEV-* <id>/src` | EDT-проекты в workspace `.edt-workspace`, location = XML-корни task-клона |
 | `lsp-skill diagnostics` | `get_problem_summary` + `get_project_errors` (фильтр по изменённым объектам) |
@@ -83,9 +87,9 @@ set VER_EDT=<фактическая версия, каталог рядом с 1
 4. `get_project_errors` с `severity: "ERRORS"` и фильтром `objects` / `objectFqns` по изменённым объектам (лимит 1000). Для BSL в ответе есть Module path + Line.
 5. Новые ERRORS, внесённые задачей, исправить. Фоновые ошибки эталона — с evidence, как для Jenkins `UNSTABLE`.
 
-Не вызывать `lsp-skill diagnostics` на TB-PC, пока жив EDT MCP.
+Канон проверки кода — `lsp-skill diagnostics`. Этот архив его не отменяет.
 
-## Unit (вместо invoke-conf-main-local-unit.ps1)
+## Unit (архив, не канон)
 
 Нужны: EDT-приложение на тестовую ИБ, launch configuration, YAXUnit в ИБ, в workspace проекты конфигурации и `src/tests`.
 
@@ -109,7 +113,7 @@ get_applications
 
 Отчёт: JUnit + `report.md`. Свежий отчёт должен содержать все новые/изменённые testCase задачи. Копию положить в `DEV-123/`.
 
-`invoke-conf-main-local-unit.ps1` — только если EDT MCP/YAXUnit-запуск на контуре сломан; в pre-push явно указать fallback.
+Канон локального Unit — `invoke-conf-main-local-unit.ps1`. Блок выше не запускать.
 
 ## Pre-push (фрагмент)
 

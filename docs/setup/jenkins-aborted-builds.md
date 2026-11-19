@@ -9,7 +9,7 @@
 3. Зафиксировать в описании MR и в чате: номера трёх сборок, время, stage на котором abort.
 4. **Ждать явной команды** пользователя или PM («можно ретраить» / «инфра починена»).
 
-Это правило действует на ноутбуке PM и на worker `TB-PC` одинаково (см. `.cursor/rules/jenkins-mr-monitor.mdc`, critical-flow п.11).
+Это правило действует на ноутбуке PM и на worker `TB-PC` одинаково (см. `.cursor/rules/jenkins-mr-monitor.mdc` и critical-flow).
 
 ## Зачем
 

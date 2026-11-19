@@ -1,4 +1,5 @@
-# Repair TB-PC tb-worker.env: restore CURSOR_API_KEY + proxy from _AI secrets, restart worker.
+# Explicit repair of TB-PC tb-worker.env from secrets already stored under Yandex _AI.
+# Does not copy rules or scripts. Those come from the CFG_Development git clone.
 # ASCII-only for Windows PowerShell 5.1. Does not print secrets.
 
 [CmdletBinding()]
@@ -120,13 +121,7 @@ foreach ($k in @($keys.Keys)) {
 $out | Set-Content -LiteralPath $envFile -Encoding utf8
 Write-Step ("Wrote $envFile (CURSOR_API_KEY len={0})" -f $apiKey.Length)
 
-# Apply overlay scripts if present (ASCII fixed start/apply)
-$syncScript = Join-Path $bundle 'overlay\tools\scripts\sync-tb-workspace-yandex.ps1'
-if (Test-Path -LiteralPath $syncScript) {
-    Write-Step 'Applying overlay scripts...'
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $syncScript `
-        -Action Apply -WorkspaceRoot $WorkspaceRoot -YandexAiDir $AiRoot
-}
+# Shell files stay on CFG_Development. This repair does not copy the Yandex overlay.
 
 $applyScript = Join-Path $WorkspaceRoot 'tools\scripts\apply-tb-worker-proxy-from-cursor-settings.ps1'
 if (Test-Path -LiteralPath $applyScript) {

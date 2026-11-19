@@ -71,7 +71,7 @@ git -c http.sslbackend=openssl -c http.sslVerify=false `
 | Cursor API | `tb-worker.env` → `CURSOR_API_KEY` | — |
 | Jira | CredMan `jira.centrofinans.ru` | запрещён |
 
-Не класть секреты в overlay `_AI` и не коммитить.
+Секреты не коммитить и не класть на Яндекс.Диск. Расположение диска — `docs/setup/yandex-disk.md`; для передачи оболочки он не используется.
 
 ## Если токены утеряны
 

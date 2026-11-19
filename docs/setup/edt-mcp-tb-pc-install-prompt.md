@@ -1,3 +1,7 @@
+# Установка EDT MCP на TB-PC (архив)
+
+Этот промпт не выполнять. Текущий канон проверки — LSP и `invoke-conf-main-local-unit.ps1`.
+
 # Установка EDT MCP на TB-PC (волна 1)
 
 Роль: инженер контура на машине TB-PC. Workspace: `D:\Dev Projects\TB`. Не вызывать `move_agent_to_root` / `move_agent_to_cloned_root`. Не править `repos/conf-main/src` и не коммитить в эталоны. Не трогать git-клоны 1С, кроме чтения путей.

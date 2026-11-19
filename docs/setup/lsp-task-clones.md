@@ -1,8 +1,6 @@
 # LSP для task-клонов
 
-На TB-PC при недоступном EDT MCP LSP (`lsp-skill` / `bsl-language-server`) — **обязательный** локальный контроль качества кода (замена Sonar до внешней Jenkins-сборки), **наравне** с `invoke-conf-main-local-unit.ps1`. Внешний SonarQube Quality Gate по MR остаётся обязательным после push (`docs/setup/sonarqube-quality-gate.md`).
-
-Когда EDT MCP готов — канон проверки кода снова EDT MCP (`docs/setup/edt-mcp.md`); LSP остаётся допустимым доп. контуром.
+LSP (`lsp-skill` / `bsl-language-server`) — обязательный локальный контроль качества кода на проекте task-клона (замена Sonar до внешней Jenkins-сборки), наравне с `invoke-conf-main-local-unit.ps1`. Внешний SonarQube Quality Gate по MR остаётся обязательным после push (`docs/setup/sonarqube-quality-gate.md`).
 
 Эта инструкция описывает настройку `lsp-skill` / `bsl-language-server` для task-клонов workspace TB.
 

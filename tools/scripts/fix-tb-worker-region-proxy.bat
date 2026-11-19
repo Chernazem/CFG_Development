@@ -15,7 +15,7 @@ if not exist "%PS1%" (
   exit /b 1
 )
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PS1%" -AiRoot "%~dp0."
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PS1%"
 set "EC=%ERRORLEVEL%"
 if not "%EC%"=="0" (
   echo FAILED %EC%

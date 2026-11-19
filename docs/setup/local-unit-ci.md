@@ -1,6 +1,6 @@
-# Локальный CI и Unit-тесты conf-main (запасной контур)
+# Локальный CI и Unit-тесты conf-main
 
-**Канон на TB-PC — YAXUnit через EDT MCP** (`run_yaxunit_tests`), см. [`edt-mcp.md`](edt-mcp.md). Скрипт ниже — только если EDT MCP недоступен.
+Канон локального Unit на TB-PC — скрипт ниже. Проверка кода рядом с ним — LSP, [`lsp-task-clones.md`](lsp-task-clones.md).
 
 Канонический reusable-скрипт:
 

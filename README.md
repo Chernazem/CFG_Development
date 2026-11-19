@@ -1,14 +1,14 @@
 # TB — workspace 1С (мультирепозиторий + мультиагент)
 
-Рабочая область для разработки **нескольких конфигураций 1С** в отдельных git-репозиториях с ролевыми AI-агентами в Cursor.
+Рабочая область для разработки **нескольких конфигураций 1С**. Корень — git-репозиторий [Chernazem/CFG_Development](https://github.com/Chernazem/CFG_Development). Это основной репозиторий **флоу, skills, скриптов и правил**. Исходники конфигураций лежат в `repos/<id>/` и в этот репозиторий не коммитятся.
 
 ## Структура
 
 ```
 TB/                              # оболочка workspace, git@github.com:Chernazem/CFG_Development.git
 ├── TB.code-workspace            # multi-root: добавляйте repos/<id>
-├── AGENTS.md                    # оркестрация агентов
-├── agents/roles.yaml
+├── AGENTS.md                    # карта оболочки и ролей
+├── agents/roles.yaml            # указатель на AGENTS.md
 ├── .cursor/
 │   ├── rules/                   # только workspace (не BSL конкретной базы)
 │   └── skills/                  # общие роли: аналитик, разработчик, …
@@ -32,7 +32,7 @@ TB/                              # оболочка workspace, git@github.com:Ch
 
 ## Оболочка на другой машине
 
-Каноническая копия правил, skills, docs и скриптов — private-репозиторий [Chernazem/CFG_Development](https://github.com/Chernazem/CFG_Development).
+Канон флоу, skills, скриптов и правил — private-репозиторий [Chernazem/CFG_Development](https://github.com/Chernazem/CFG_Development). Обновление оболочки: `git pull` в корне. Эталоны TB / TB_ext / tb_api обновляются отдельно, см. `docs/setup/gitlab.md`.
 
 ```powershell
 git clone git@github.com:Chernazem/CFG_Development.git TB

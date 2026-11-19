@@ -119,34 +119,7 @@ if ($env:HTTPS_PROXY) {
     Add-Report $report 'NODE_USE_ENV_PROXY=1'
 }
 
-# Refresh scripts from Yandex overlay if present
-$aiCandidates = New-Object System.Collections.Generic.List[string]
-$settingsGlob = Join-Path $env:LOCALAPPDATA 'Yandex\Yandex.Disk.2\*\settings.xml'
-foreach ($f in @(Get-ChildItem -Path $settingsGlob -ErrorAction SilentlyContinue)) {
-    [xml]$xml = Get-Content -LiteralPath $f.FullName -Encoding UTF8
-    if ($xml.Settings.SyncFolder) {
-        [void]$aiCandidates.Add((Join-Path $xml.Settings.SyncFolder '_AI'))
-    }
-}
-foreach ($c in @('D:\YandexDisk\_AI', (Join-Path $env:USERPROFILE 'YandexDisk\_AI'))) {
-    [void]$aiCandidates.Add($c)
-}
-foreach ($drive in @('D:\', 'F:\', 'C:\')) {
-    if (-not (Test-Path -LiteralPath $drive)) { continue }
-    Get-ChildItem -Path $drive -Directory -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -like 'YandexDisk*' -or $_.Name -like 'Yandex.Disk*' } |
-        ForEach-Object { [void]$aiCandidates.Add((Join-Path $_.FullName '_AI')) }
-}
-if ($env:TB_YANDEX_AI) { [void]$aiCandidates.Add($env:TB_YANDEX_AI) }
-foreach ($ai in $aiCandidates) {
-    $syncScript = Join-Path $ai 'TB-workspace\overlay\tools\scripts\sync-tb-workspace-yandex.ps1'
-    if (Test-Path -LiteralPath $syncScript) {
-        Add-Report $report ('Applying overlay from ' + $ai)
-        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $syncScript `
-            -Action Apply -WorkspaceRoot $workspace -YandexAiDir $ai
-        break
-    }
-}
+Add-Report $report 'Shell source: CFG_Development git. Yandex overlay is not applied.'
 
 $agentCmd = Join-Path $env:LOCALAPPDATA 'cursor-agent\agent.cmd'
 if (-not (Test-Path -LiteralPath $agentCmd)) { throw "Missing $agentCmd" }
@@ -242,15 +215,6 @@ if (-not $desktop -or -not (Test-Path -LiteralPath $desktop)) {
 }
 ($report -join [Environment]::NewLine) | Set-Content -LiteralPath $reportPath -Encoding utf8
 Add-Report $report ('Wrote report: ' + $reportPath)
-
-# Also copy next to _AI if present
-foreach ($ai in $aiCandidates) {
-    if (Test-Path -LiteralPath $ai) {
-        Copy-Item -LiteralPath $reportPath -Destination (Join-Path $ai 'tb-worker-smoke.txt') -Force
-        Add-Report $report ('Copied report to ' + (Join-Path $ai 'tb-worker-smoke.txt'))
-        break
-    }
-}
 
 if ($skipRestart) {
     Add-Report $report 'Skip scheduled-task restart: worker process already running from smoke.'

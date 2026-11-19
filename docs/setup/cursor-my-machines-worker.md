@@ -31,10 +31,7 @@ NO_PROXY=localhost,127.0.0.1,.centrofinans.ru,centrofinans.ru,jenkins.centrofina
 
 `start-tb-cursor-worker.ps1` **больше не сбрасывает** proxy: если переменные заданы в `tb-worker.env`, они остаются у процесса `agent worker`. Внутренние `*.centrofinans.ru` идут мимо proxy через `NO_PROXY` (OpenVPN). После правки env — перезапуск задачи `TB-Cursor-Worker`.
 
-На TB-PC one-shot из Яндекс `_AI` (после синхронизации папки):
-
-- `fix-tb-cursor-worker-proxy.bat` — Apply overlay, запись proxy из `TB-workspace\secrets\cursor-https-proxy.url`, restart `TB-Cursor-Worker`.
-- Рядом: `fix-tb-cursor-worker-proxy.ps1`, `fix-tb-cursor-worker-proxy.README.txt`.
+Прокси и перезапуск worker на TB-PC — скриптами из клона `CFG_Development` (`tools/scripts/fix-tb-cursor-worker-proxy.ps1`, `apply-tb-worker-proxy-from-cursor-settings.ps1`). URL прокси берётся из `http.proxy` Cursor на этой машине. Каталог Яндекс.Диска для этого не нужен.
 
 `launch-tb-machine-agent.ps1` передаёт тот же proxy в `curl -x`.
 
@@ -48,21 +45,7 @@ NO_PROXY=localhost,127.0.0.1,.centrofinans.ru,centrofinans.ru,jenkins.centrofina
 
 Автологин в Windows на контуре должен быть включён.
 
-1. Синхронизировать overlay workspace на контур через Яндекс.Диск `_AI` (правила, skills, tools, docs — не git-клоны `repos/conf-main` и т.п.):
-
-```powershell
-# на этой машине (источник):
-powershell -NoProfile -File .\tools\scripts\sync-tb-workspace-yandex.ps1 -Action Export
-
-# на TB-PC, когда Яндекс докачает `_AI\TB-workspace`
-# (корень диска может быть D:\YandexDisk_a.kuznecov@ftech.io\_AI — не только D:\YandexDisk\_AI):
-powershell -NoProfile -File .\sync-tb-workspace-yandex.ps1 `
-  -Action Apply -WorkspaceRoot "D:\Dev Projects\TB"
-```
-
-Либо задать явно: env `TB_YANDEX_AI=D:\YandexDisk_a.kuznecov@ftech.io\_AI` (или `-YandexAiDir`). Поиск корня: `tools/scripts/Find-TbYandexAiDir.ps1`.
-
-Вторую команду запускать из корня `_AI` (там лежит копия скрипта) либо из `_AI\TB-workspace\overlay\tools\scripts\`. Не копировать `CursorAPIKey.txt` / `.env` / `secrets`. Исходники 1С на контуре — `git pull` в `repos/*`, не через диск.
+1. Держать корень workspace клоном `CFG_Development` и на ноутбуке, и на TB-PC. Актуальность правил — `tools/scripts/update-cfg-development-shell.ps1` в старте задачи и раз в сутки (`docs/setup/shell-sync.md`). Исходники 1С на контуре — `git pull` в `repos/*`. Расположение Яндекс.Диска, если понадобится большой файл или явная передача через диск: [yandex-disk.md](yandex-disk.md).
 
 2. Personal API key: [cursor.com/dashboard/api](https://cursor.com/dashboard/api).
 3. От пользователя автологина, **остановить** старый `agent worker`, затем:

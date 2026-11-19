@@ -1,6 +1,8 @@
-# Copy TB workspace overlay (rules, skills, tools, docs) via Yandex.Disk folder "_AI".
+# Explicit-only copy of a workspace bundle via Yandex.Disk "_AI".
+# Not the default path between machines. Rules and scripts travel by git CFG_Development.
+# Use for large files or when the user explicitly asks for Yandex.Disk.
 # Does not copy nested git working trees, DEV-* task dirs, secrets, or ".tools".
-# Docs: docs/setup/cursor-my-machines-worker.md
+# Locations: docs/setup/yandex-disk.md
 # Keep this file ASCII-only so Windows PowerShell 5.1 can parse it without a BOM.
 
 [CmdletBinding()]
@@ -159,6 +161,7 @@ if ($Action -eq 'Export') {
     }
 
     $applyLines = @(
+        'Explicit Yandex.Disk apply only. Default shell sync is git CFG_Development.',
         'Apply TB overlay on the contour PC:',
         '',
         'powershell -NoProfile -File .\overlay\tools\scripts\sync-tb-workspace-yandex.ps1 -Action Apply -WorkspaceRoot "D:\Dev Projects\TB"',

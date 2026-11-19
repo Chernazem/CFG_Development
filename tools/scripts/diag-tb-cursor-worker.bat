@@ -14,7 +14,7 @@ if not exist "%PS1%" (
 )
 if not exist "%PS1%" (
   echo ERROR: diag-tb-cursor-worker.ps1 not found
-  echo Wait for Yandex sync of _AI, then re-run.
+  echo Run it from the CFG_Development clone, tools\scripts.
   pause
   exit /b 1
 )

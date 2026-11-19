@@ -13,35 +13,7 @@ function Write-Step([string]$Message) {
     Write-Host ("[{0}] {1}" -f (Get-Date -Format 'HH:mm:ss'), $Message)
 }
 
-function Find-AiRoot {
-    param([string]$Hint)
-    if ($Hint -and (Test-Path -LiteralPath $Hint)) {
-        return (Resolve-Path -LiteralPath $Hint).Path
-    }
-    if ($PSScriptRoot -and (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TB-workspace'))) {
-        return (Resolve-Path -LiteralPath $PSScriptRoot).Path
-    }
-    $settingsGlob = Join-Path $env:LOCALAPPDATA 'Yandex\Yandex.Disk.2\*\settings.xml'
-    foreach ($f in @(Get-ChildItem -Path $settingsGlob -ErrorAction SilentlyContinue)) {
-        [xml]$xml = Get-Content -LiteralPath $f.FullName -Encoding UTF8
-        if ($xml.Settings.SyncFolder) {
-            $ai = Join-Path $xml.Settings.SyncFolder '_AI'
-            if (Test-Path -LiteralPath $ai) { return (Resolve-Path -LiteralPath $ai).Path }
-        }
-    }
-    $helper = Join-Path $PSScriptRoot 'Find-TbYandexAiDir.ps1'
-    if (Test-Path -LiteralPath $helper) {
-        . $helper
-        return Find-TbYandexAiDir
-    }
-    foreach ($c in @('D:\YandexDisk\_AI', (Join-Path $env:USERPROFILE 'YandexDisk\_AI'))) {
-        if (Test-Path -LiteralPath $c) { return (Resolve-Path -LiteralPath $c).Path }
-    }
-    throw 'Yandex _AI not found. Set TB_YANDEX_AI e.g. D:\YandexDisk_a.kuznecov@ftech.io\_AI'
-}
-
-$AiRoot = Find-AiRoot -Hint $AiRoot
-Write-Step "AI root: $AiRoot"
+# -AiRoot is accepted for old callers and ignored. Shell files come from CFG_Development.
 
 $envFile = Join-Path $env:USERPROFILE '.cursor\tb-worker.env'
 if (-not (Test-Path -LiteralPath $envFile)) { throw "Missing $envFile" }
@@ -98,13 +70,6 @@ if (-not $workspace) { $workspace = 'D:\Dev Projects\TB' }
 # keys may have removed TB_WORKSPACE_ROOT - reread
 Get-Content $envFile | ForEach-Object {
     if ($_ -match '^TB_WORKSPACE_ROOT=(.+)$') { $workspace = $Matches[1].Trim() }
-}
-
-$syncScript = Join-Path $AiRoot 'TB-workspace\overlay\tools\scripts\sync-tb-workspace-yandex.ps1'
-if (Test-Path -LiteralPath $syncScript) {
-    Write-Step 'Applying overlay (updated start-tb-cursor-worker.ps1)...'
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $syncScript `
-        -Action Apply -WorkspaceRoot $workspace -YandexAiDir $AiRoot
 }
 
 # User-level env so child processes definitely see proxy even if script misses one

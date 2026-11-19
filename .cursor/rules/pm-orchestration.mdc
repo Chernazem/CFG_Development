@@ -5,10 +5,11 @@ alwaysApply: true
 
 # Оркестрация на worker
 
-Реализация, ревью, проверка кода (EDT MCP) и YAXUnit по контуру 1С — на машине `TB-PC` (Cursor My Machines, корень `D:\Dev Projects\TB`: `conf-main` / `extensions` / `api-swagger`), не локальными субагентами этого компьютера. Иначе работа оборвётся, когда ноутбук выключат. Контур EDT MCP: `docs/setup/edt-mcp.md`.
+Реализация, ревью, проверка кода (LSP) и локальный Unit по контуру 1С — на машине `TB-PC` (Cursor My Machines, корень `D:\Dev Projects\TB`: `conf-main` / `extensions` / `api-swagger`), не локальными субагентами этого компьютера. Иначе работа оборвётся, когда ноутбук выключат. EDT в текущей разработке не используем.
 
 - Контрольная плоскость (план, постановка, статус) может жить в чате PM на этом ПК.
 - Запуск: `tools/scripts/launch-tb-machine-agent.ps1` или [cursor.com/agents](https://cursor.com/agents) → среда `TB-PC`.
 - Запрещено `Task`/`environment: cloud` (VM Cursor без 1С/Jenkins) и локальный `Task` для реализации.
 - Исключение: короткий read-only разбор на этом ПК, пока пользователь здесь.
 - Настройка worker: `docs/setup/cursor-my-machines-worker.md`.
+- Флоу, skills, скрипты и правила на ноутбуке и на TB-PC берутся из `origin/main` репозитория `CFG_Development` скриптом `tools/scripts/update-cfg-development-shell.ps1` (старт задачи и раз в сутки). Яндекс.Диск для этой передачи не использовать: только большие файлы или явный запрос (`docs/setup/yandex-disk.md`). `D:\Dev Projects\TB` — корень worker на контуре, не путь ноутбука.

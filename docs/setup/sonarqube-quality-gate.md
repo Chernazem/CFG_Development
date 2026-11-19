@@ -37,4 +37,4 @@ SonarQube Quality Gate: OK | ERROR
 
 ## Локальный предконтроль (TB-PC)
 
-Пока EDT MCP не готов: перед push обязателен **LSP** на проекте task-клона (`docs/setup/lsp-task-clones.md`) — локальная замена Sonar. Все правила диагностики LSP должны быть включены. Это не отменяет внешний Quality Gate после Jenkins.
+Перед push обязателен **LSP** на проекте task-клона (`docs/setup/lsp-task-clones.md`) — локальная замена Sonar. Все правила диагностики LSP должны быть включены. Это не отменяет внешний Quality Gate после Jenkins.
